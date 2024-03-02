@@ -12,7 +12,7 @@ class ComicK extends models_1.MangaParser {
         this.baseUrl = 'https://comick.app';
         this.logo = 'https://th.bing.com/th/id/OIP.fw4WrmAoA2PmKitiyMzUIgAAAA?pid=ImgDet&rs=1';
         this.classPath = 'MANGA.ComicK';
-        this.apiUrl = 'https://api.comick.app';
+        this.apiUrl = 'https://api.comick.fun';
         /**
          * @description Fetches info about the manga
          * @param mangaId Comic slug
@@ -118,7 +118,7 @@ class ComicK extends models_1.MangaParser {
                 page = 1;
             }
             const comicId = await this.getComicId(mangaId);
-            const req = await this._axios().get(`/comic/${comicId}/chapters?page=${page}`);
+            const req = await this._axios().get(`/comic/${comicId}/chapters?page=${page}&lang=en`);
             return req.data.chapters;
         };
     }

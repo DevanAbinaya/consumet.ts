@@ -7,7 +7,7 @@ class ComicK extends MangaParser {
   protected override logo = 'https://th.bing.com/th/id/OIP.fw4WrmAoA2PmKitiyMzUIgAAAA?pid=ImgDet&rs=1';
   protected override classPath = 'MANGA.ComicK';
 
-  private readonly apiUrl = 'https://api.comick.app';
+  private readonly apiUrl = 'https://api.comick.fun';
 
   private _axios() {
     return axios.create({
@@ -138,7 +138,7 @@ class ComicK extends MangaParser {
       page = 1;
     }
     const comicId = await this.getComicId(mangaId);
-    const req = await this._axios().get(`/comic/${comicId}/chapters?page=${page}`);
+    const req = await this._axios().get(`/comic/${comicId}/chapters?page=${page}&lang=en`);
     return req.data.chapters;
   };
 
