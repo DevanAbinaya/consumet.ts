@@ -115,14 +115,14 @@ class ComicK extends models_1.MangaParser {
         };
         this.fetchAllChapters = async (mangaId, page) => {
             let allChapters = [];
+            let hasNextPage = true; // Initially assume there is a next page
             const comicId = await this.getComicId(mangaId);
-            while (true) {
+            while (hasNextPage) {
                 const req = await this._axios().get(`/comic/${comicId}/chapters?page=${page}&lang=en`);
                 const chapters = req.data.chapters;
                 allChapters = allChapters.concat(chapters);
-                if (!req.data.hasNextPage) {
-                    break;
-                }
+                const totalPages = Math.ceil(req.data.total / req.data.limit);
+                hasNextPage = (page < totalPages); // Check if there are more pages to fetch
                 page++; // Move to the next page
             }
             return allChapters;
