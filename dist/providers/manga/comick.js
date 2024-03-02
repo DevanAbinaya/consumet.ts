@@ -114,12 +114,18 @@ class ComicK extends models_1.MangaParser {
             }
         };
         this.fetchAllChapters = async (mangaId, page) => {
-            if (page <= 0) {
-                page = 1;
-            }
+            let allChapters = [];
             const comicId = await this.getComicId(mangaId);
-            const req = await this._axios().get(`/comic/${comicId}/chapters?page=${page}&lang=en`);
-            return req.data.chapters;
+            while (true) {
+                const req = await this._axios().get(`/comic/${comicId}/chapters?page=${page}&lang=en`);
+                const chapters = req.data.chapters;
+                allChapters = allChapters.concat(chapters);
+                if (!req.data.hasNextPage) {
+                    break;
+                }
+                page++; // Move to the next page
+            }
+            return allChapters;
         };
     }
     _axios() {
