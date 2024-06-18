@@ -26,7 +26,6 @@ class Gogoanime extends AnimeParser {
   protected override classPath = 'ANIME.Gogoanime';
   private readonly ajaxUrl = 'https://ajax.gogocdn.net/ajax';
 
-
   constructor(
     customBaseURL?: string,
     proxy?: ProxyConfig,

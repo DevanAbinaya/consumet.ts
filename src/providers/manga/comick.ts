@@ -149,7 +149,6 @@ class ComicK extends MangaParser {
 
         page++; // Move to the next page
     }
-
     return allChapters;
   };
 
