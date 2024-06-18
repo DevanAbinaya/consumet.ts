@@ -134,12 +134,23 @@ class ComicK extends MangaParser {
   };
 
   private fetchAllChapters = async (mangaId: string, page: number): Promise<any[]> => {
-    if (page <= 0) {
-      page = 1;
-    }
+    let allChapters: any[] = [];
+    let hasNextPage = true; // Initially assume there is a next page
+
     const comicId = await this.getComicId(mangaId);
-    const req = await this._axios().get(`/comic/${comicId}/chapters?page=${page}`);
-    return req.data.chapters;
+
+    while (hasNextPage) {
+        const req = await this._axios().get(`/comic/${comicId}/chapters?page=${page}&lang=en`);
+        const chapters = req.data.chapters;
+        allChapters = allChapters.concat(chapters);
+
+        const totalPages = Math.ceil(req.data.total / req.data.limit);
+        hasNextPage = (page < totalPages); // Check if there are more pages to fetch
+
+        page++; // Move to the next page
+    }
+
+    return allChapters;
   };
 
   /**
