@@ -72,6 +72,17 @@ class AnimeKai extends AnimeParser {
     }
     return this.scrapeCardPage(`${this.baseUrl}/recent?page=${page}`);
   }
+
+  /**
+   * @param page number
+   */
+  fetchRecentlyUpdated(page: number = 1): Promise<ISearch<IAnimeResult>> {
+    if (0 >= page) {
+      page = 1;
+    }
+    return this.scrapeCardPage(`${this.baseUrl}/updates?page=${page}`);
+  }
+
   /**
    * @param page number
    */
@@ -407,6 +418,7 @@ class AnimeKai extends AnimeParser {
         const number = parseInt($$(el).attr('num')!);
         const title = $$(el).children('span').text().trim();
         const url = `${this.baseUrl}/watch/${info.id}${$$(el).attr('href')}ep=${$$(el).attr('num')}`;
+        const isFiller = $$(el).hasClass('filler');
         const isSubbed = number <= (parseInt($('.entity-scroll > .info > span.sub').text().trim()) || 0);
         const isDubbed = number <= (parseInt($('.entity-scroll > .info > span.dub').text().trim()) || 0);
 
@@ -414,6 +426,7 @@ class AnimeKai extends AnimeParser {
           id: episodeId,
           number: number,
           title: title,
+          isFiller: isFiller,
           isSubbed: isSubbed,
           isDubbed: isDubbed,
           url: url,
@@ -440,15 +453,17 @@ class AnimeKai extends AnimeParser {
     if (episodeId.startsWith('http')) {
       const serverUrl = new URL(episodeId);
       switch (server) {
-        case StreamingServers.MixDrop:
+        case StreamingServers.MegaUp:
           return {
             headers: { Referer: serverUrl.href },
             ...(await new MegaUp(this.proxyConfig, this.adapter).extract(serverUrl)),
+            download: serverUrl.href.replace(/\/e\//, '/download/'),
           };
         default:
           return {
             headers: { Referer: serverUrl.href },
             ...(await new MegaUp(this.proxyConfig, this.adapter).extract(serverUrl)),
+            download: serverUrl.href.replace(/\/e\//, '/download/'),
           };
       }
     }
@@ -576,7 +591,7 @@ class AnimeKai extends AnimeParser {
           );
           const decodedData = JSON.parse(DecodeIframeData(data.result));
           servers.push({
-            name: `MegaUp ${$(server).text().trim()}`!, //megaup is the only server for now
+            name: `MegaUp ${$(server).text().trim()}`.toLowerCase()!, //megaup is the only server for now
             url: decodedData.url,
             intro: {
               start: decodedData?.skip.intro[0],

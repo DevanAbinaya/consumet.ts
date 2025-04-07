@@ -10,6 +10,11 @@ test('returns a filled array of anime list', async () => {
 });
 
 test('returns a filled array of anime list', async () => {
+  const data = await zoro.fetchAdvancedSearch(1, 'tv', 'finished_airing');
+  expect(data.results).not.toEqual([]);
+});
+
+test('returns a filled array of anime list', async () => {
   const data = await zoro.fetchTopAiring();
   expect(data.results).not.toEqual([]);
 });
@@ -136,6 +141,7 @@ test('returns a filled object of episode sources', async () => {
   const info = await zoro.fetchAnimeInfo(res.results[3].id);
   const data = await zoro.fetchEpisodeSources(info.episodes![0].id); // Overlord IV episode 1 id
   expect(data.sources).not.toEqual([]);
+  expect(data.headers).not.toBeNull();
 });
 test('returns a filled object of episode sources of multiple episodes', async () => {
   const data1 = await zoro.fetchEpisodeSources(
